@@ -18,7 +18,4 @@ class EstadisticasProvider extends ChangeNotifier{
     _historial = await stService.cargarEstadisticas(idPerfil);
     notifyListeners();
   }
-
-
-
 }
