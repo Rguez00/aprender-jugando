@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:proyecto_aprender_jugando/providers/estadisticas_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/juego_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/perfil_provider.dart';
+import 'package:proyecto_aprender_jugando/screens/juegos/puzzle/puzzle_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,9 +22,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
-        home: Scaffold(
-          body: Center(child: Text("Hola")),
-        ),
+        home: PuzzleScreen(),
       ),
     );
   }
