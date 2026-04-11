@@ -40,7 +40,7 @@ class TableroPrincipal extends StatelessWidget {
                 image: DecorationImage(
                   image: MemoryImage(imagen),
                   fit: BoxFit.cover,
-                  opacity: 0.3,
+                  opacity: 0.1,
                 ),
               ),
               child: ResponsiveGrid(

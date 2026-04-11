@@ -17,9 +17,9 @@ class MarcoJuego extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF308BE6),
+      backgroundColor: const Color(0xFFA3D1FA),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(0),
         child: Column(
           children: [
             // Título
@@ -38,7 +38,7 @@ class MarcoJuego extends StatelessWidget {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF308BE6),
+                  color: const Color(0xFFA3D1FA),
                 ),
                 child: child,
               ),
