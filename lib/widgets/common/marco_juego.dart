@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_aprender_jugando/utils/tema.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/scale_pulse.dart';
 
 class MarcoJuego extends StatelessWidget {
   final String titulo;
@@ -17,74 +19,97 @@ class MarcoJuego extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFA3D1FA),
-      body: Padding(
-        padding: const EdgeInsets.all(0),
-        child: Column(
-          children: [
-            // Título
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(
-                titulo,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+      body: Stack(
+        children: [
+          // Fondo
+          SizedBox.expand(
+            child: Image.asset(
+              'assets/images/fondo_juegos.png',
+              fit: BoxFit.cover,
             ),
-            // Contenido del juego
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFA3D1FA),
-                ),
-                child: child,
-              ),
-            ),
-            // Botones
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: onSalir,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 12),
-                    ),
-                    child: const Text(
-                      "Salir",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
+          ),
+          // Contenido encima del fondo
+          SafeArea(
+            child: Column(
+              children: [
+                // Cabecera
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: const BoxDecoration(
+                    color: AppTema.azulMedio,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    titulo,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: 'Nunito',
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w900,
+                      shadows: [
+                        Shadow(color: Colors.black26, blurRadius: 4, offset: Offset(1, 1)),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 32),
-                  ElevatedButton(
-                    onPressed: onReiniciar,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFFB300),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 12),
-                    ),
-                    child: const Text(
-                      "Reiniciar",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ),
+                ),
+                // Contenido del juego
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppTema.espaciadoMedio),
+                    child: child,
                   ),
-                ],
-              ),
+                ),
+                // Botones
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppTema.espaciadoExtraGrande,
+                      vertical: AppTema.espaciadoMedio),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ScalePulse(
+                          onTap: onSalir,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            decoration: AppTema.decoracionBotonRojo,
+                            child: const Text(
+                              "Salir",
+                              textAlign: TextAlign.center,
+                              style: AppTema.textoBoton,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppTema.espaciadoGrande),
+                      Expanded(
+                        child: ScalePulse(
+                          onTap: onReiniciar,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            decoration: AppTema.decoracionBotonNaranja,
+                            child: const Text(
+                              "Reiniciar",
+                              textAlign: TextAlign.center,
+                              style: AppTema.textoBoton,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

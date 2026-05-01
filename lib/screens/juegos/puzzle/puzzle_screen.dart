@@ -2,7 +2,9 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:proyecto_aprender_jugando/models/puzzle_state.dart';
 import 'package:proyecto_aprender_jugando/services/api_service.dart';
+import 'package:proyecto_aprender_jugando/utils/tema.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/marco_juego.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/scale_pulse.dart';
 import 'package:proyecto_aprender_jugando/widgets/puzzle/tablero_principal.dart';
 import 'package:proyecto_aprender_jugando/widgets/puzzle/tablero_secundario.dart';
 
@@ -44,80 +46,164 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   @override
   Widget build(BuildContext context) {
     if (cargando) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+      return Scaffold(
+        body: Stack(
+          children: [
+            SizedBox.expand(
+              child: Image.asset(
+                'assets/images/fondo_juegos.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+            const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(color: Colors.white),
+                  SizedBox(height: 16),
+                  Text(
+                    "Cargando puzzle...",
+                    style: TextStyle(
+                      fontFamily: 'Nunito',
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(color: Colors.black45, blurRadius: 4, offset: Offset(1, 1)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       );
     }
+
+    final Widget tableros = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TableroPrincipal(
+          imagen: imagenFondo!,
+          puzzleState: puzzleState!,
+          piezas: piezas!,
+          onTapCelda: _onTapCelda,
+          onDragPieza: _onDragPieza,
+          onDragIniciado: _onDragIniciado,
+        ),
+        const SizedBox(width: 16),
+        TableroSecundario(
+          piezas: piezas!,
+          puzzleState: puzzleState!,
+          onTapPieza: _onTapPieza,
+          onDragPieza: _onDragPieza,
+          onDragIniciado: _onDragIniciado,
+        ),
+      ],
+    );
 
     return MarcoJuego(
       titulo: "Puzzle",
       onSalir: () => Navigator.pop(context),
       onReiniciar: _cargarJuego,
       child: puzzleState!.finalizado
-          ? _pantallaFelicitacion()
-          : Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+          ? Stack(
         children: [
-          TableroPrincipal(
-            imagen: imagenFondo!,
-            puzzleState: puzzleState!,
-            piezas: piezas!,
-            onTapCelda: _onTapCelda,
-            onDragPieza: _onDragPieza,
-            onDragIniciado: _onDragIniciado,
-          ),
-          const SizedBox(width: 16),
-          TableroSecundario(
-            piezas: piezas!,
-            puzzleState: puzzleState!,
-            onTapPieza: _onTapPieza,
-            onDragPieza: _onDragPieza,
-            onDragIniciado: _onDragIniciado,
+          // Puzzle resuelto de fondo
+          tableros,
+          // Overlay semitransparente
+          Container(
+            padding: const EdgeInsets.only(left: 600),
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Título arcoíris
+                RichText(
+                  text: TextSpan(
+                    style: const TextStyle(
+                      fontFamily: 'Nunito',
+                      fontSize: 80,
+                      fontWeight: FontWeight.w900,
+                      shadows: [
+                        Shadow(color: Colors.black45, blurRadius: 8, offset: Offset(2, 2)),
+                      ],
+                    ),
+                    children: [
+                      TextSpan(text: '¡', style: TextStyle(color: Colors.orange[700])),
+                      TextSpan(text: 'F', style: TextStyle(color: Colors.red[400])),
+                      TextSpan(text: 'E', style: TextStyle(color: Colors.orange[600])),
+                      TextSpan(text: 'L', style: TextStyle(color: Colors.yellow[300])),
+                      TextSpan(text: 'I', style: TextStyle(color: Colors.green[400])),
+                      TextSpan(text: 'C', style: TextStyle(color: Colors.blue[300])),
+                      TextSpan(text: 'I', style: TextStyle(color: Colors.purple[300])),
+                      TextSpan(text: 'D', style: TextStyle(color: Colors.red[400])),
+                      TextSpan(text: 'A', style: TextStyle(color: Colors.orange[600])),
+                      TextSpan(text: 'D', style: TextStyle(color: Colors.yellow[300])),
+                      TextSpan(text: 'E', style: TextStyle(color: Colors.green[400])),
+                      TextSpan(text: 'S', style: TextStyle(color: Colors.blue[300])),
+                      TextSpan(text: '!', style: TextStyle(color: Colors.purple[300])),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                RichText(
+                  text: TextSpan(
+                    style: const TextStyle(
+                      fontFamily: 'Nunito',
+                      fontSize: 40,
+                      fontWeight: FontWeight.w900,
+                      shadows: [
+                        Shadow(color: Colors.black45, blurRadius: 4, offset: Offset(1, 1)),
+                      ],
+                    ),
+                    children: [
+                      TextSpan(text: '¡', style: TextStyle(color: Colors.orange[700])),
+                      TextSpan(text: 'H', style: TextStyle(color: Colors.red[400])),
+                      TextSpan(text: 'a', style: TextStyle(color: Colors.orange[600])),
+                      TextSpan(text: 's', style: TextStyle(color: Colors.yellow[600])),
+                      TextSpan(text: ' c', style: TextStyle(color: Colors.green[400])),
+                      TextSpan(text: 'o', style: TextStyle(color: Colors.blue[300])),
+                      TextSpan(text: 'm', style: TextStyle(color: Colors.purple[300])),
+                      TextSpan(text: 'p', style: TextStyle(color: Colors.red[400])),
+                      TextSpan(text: 'l', style: TextStyle(color: Colors.orange[600])),
+                      TextSpan(text: 'e', style: TextStyle(color: Colors.yellow[600])),
+                      TextSpan(text: 't', style: TextStyle(color: Colors.green[400])),
+                      TextSpan(text: 'a', style: TextStyle(color: Colors.blue[300])),
+                      TextSpan(text: 'd', style: TextStyle(color: Colors.purple[300])),
+                      TextSpan(text: 'o', style: TextStyle(color: Colors.red[400])),
+                      TextSpan(text: ' e', style: TextStyle(color: Colors.orange[600])),
+                      TextSpan(text: 'l', style: TextStyle(color: Colors.yellow[600])),
+                      TextSpan(text: ' p', style: TextStyle(color: Colors.green[400])),
+                      TextSpan(text: 'u', style: TextStyle(color: Colors.blue[300])),
+                      TextSpan(text: 'z', style: TextStyle(color: Colors.purple[300])),
+                      TextSpan(text: 'z', style: TextStyle(color: Colors.red[400])),
+                      TextSpan(text: 'l', style: TextStyle(color: Colors.orange[600])),
+                      TextSpan(text: 'e', style: TextStyle(color: Colors.yellow[600])),
+                      TextSpan(text: '!', style: TextStyle(color: Colors.green[400])),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 32),
+                ScalePulse(
+                  onTap: _cargarJuego,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                    decoration: AppTema.decoracionBotonNaranja,
+                    child: const Text(
+                      "¡Otro puzzle!",
+                      style: AppTema.textoBoton,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _pantallaFelicitacion() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            "¡FELICIDADES!",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 48,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            "¡Has completado el puzzle!",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-            ),
-          ),
-          const SizedBox(height: 32),
-          ElevatedButton(
-            onPressed: _cargarJuego,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFFB300),
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-            ),
-            child: const Text(
-              "¡Otro puzzle!",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
+      )
+          : tableros,
     );
   }
 
