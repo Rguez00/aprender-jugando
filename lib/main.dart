@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:proyecto_aprender_jugando/providers/estadisticas_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/juego_provider.dart';
@@ -7,7 +8,12 @@ import 'package:proyecto_aprender_jugando/screens/juegos/puzzle/puzzle_screen.da
 import 'package:proyecto_aprender_jugando/screens/splash/splash_screen.dart';
 import 'package:proyecto_aprender_jugando/utils/tema.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
   runApp(const MyApp());
 }
 

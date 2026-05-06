@@ -6,6 +6,7 @@ import 'package:proyecto_aprender_jugando/widgets/common/animated_background.dar
 import 'package:proyecto_aprender_jugando/widgets/common/fade_in_slide.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/scale_pulse.dart';
 
+import '../juegos/parejas/parejas_screen.dart';
 import '../juegos/puzzle/puzzle_screen.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -116,7 +117,10 @@ class MenuScreen extends StatelessWidget {
                                       // próximamente
                                         break;
                                       case 'Parejas':
-                                      // próximamente
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (_) => const ParejasScreen()),
+                                        );
                                         break;
                                     }
                                   },

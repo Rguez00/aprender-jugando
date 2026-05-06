@@ -139,7 +139,7 @@ class AppTema {
     fontFamily: fuente,
     fontSize: 18,
     fontWeight: FontWeight.bold,
-    color: dorado,
+    color: verde,
     shadows: [
       Shadow(color: Colors.black26, blurRadius: 4, offset: Offset(1, 1)),
     ],

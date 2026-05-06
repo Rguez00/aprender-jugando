@@ -7,6 +7,12 @@ import 'package:proyecto_aprender_jugando/widgets/common/marco_juego.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/scale_pulse.dart';
 import 'package:proyecto_aprender_jugando/widgets/puzzle/tablero_principal.dart';
 import 'package:proyecto_aprender_jugando/widgets/puzzle/tablero_secundario.dart';
+import 'package:provider/provider.dart';
+import 'package:proyecto_aprender_jugando/models/estadisticas.dart';
+import 'package:proyecto_aprender_jugando/models/juego_puzzle.dart';
+import 'package:proyecto_aprender_jugando/providers/estadisticas_provider.dart';
+import 'package:proyecto_aprender_jugando/providers/juego_provider.dart';
+import 'package:proyecto_aprender_jugando/providers/perfil_provider.dart';
 
 class PuzzleScreen extends StatefulWidget {
   const PuzzleScreen({super.key});
@@ -41,6 +47,32 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
       cargando = false;
       imagenFondo = imagenCuadrada;
     });
+  }
+
+  void _onJuegoCompletado() {
+    final perfilProvider = context.read<PerfilProvider>();
+    final juegoProvider = context.read<JuegoProvider>();
+    final estadisticasProvider = context.read<EstadisticasProvider>();
+
+    if (perfilProvider.perfilActivo == null) return;
+
+    const int puntos = 50; // puzzle vale 50 puntos fijos
+
+    // Actualizar puntos del perfil
+    perfilProvider.actualizarPuntos(puntos);
+
+    // Guardar estadísticas
+    juegoProvider.iniciarJuego(JuegoPuzzle(
+      id: 'puzzle',
+      nombre: 'Puzzle',
+      descripcion: 'Completa el puzzle con las piezas',
+      icono: 'assets/images/logo_puzzle.png',
+      url: '',
+    ));
+    final estadistica = juegoProvider.finalizarJuego(
+      perfilProvider.perfilActivo!.id,
+    );
+    estadisticasProvider.guardarEstadisticas(estadistica);
   }
 
   @override
