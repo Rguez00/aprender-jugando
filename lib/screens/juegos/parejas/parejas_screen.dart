@@ -120,7 +120,7 @@ class _ParejasScreenState extends State<ParejasScreen> {
       cabeceraExtra: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: AppTema.dorado,
+          color: AppTema.blanco,
           borderRadius: AppTema.radiusMedio,
           boxShadow: [
             BoxShadow(
@@ -130,13 +130,16 @@ class _ParejasScreenState extends State<ParejasScreen> {
             ),
           ],
         ),
-        child: Text(
-          '🎯 Intentos: ${_estado.intentos}',
-          style: const TextStyle(
-            fontFamily: 'Nunito',
-            fontSize: 18,
-            fontWeight: FontWeight.w900,
-            color: AppTema.azulOscuro,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            '🎯 Intentos: ${_estado.intentos}',
+            style: const TextStyle(
+              fontFamily: 'Nunito',
+              fontSize: 34,
+              fontWeight: FontWeight.w900,
+              color: Colors.black54,
+            ),
           ),
         ),
       ),

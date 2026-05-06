@@ -8,7 +8,6 @@ import 'package:proyecto_aprender_jugando/widgets/common/scale_pulse.dart';
 import 'package:proyecto_aprender_jugando/widgets/puzzle/tablero_principal.dart';
 import 'package:proyecto_aprender_jugando/widgets/puzzle/tablero_secundario.dart';
 import 'package:provider/provider.dart';
-import 'package:proyecto_aprender_jugando/models/estadisticas.dart';
 import 'package:proyecto_aprender_jugando/models/juego_puzzle.dart';
 import 'package:proyecto_aprender_jugando/providers/estadisticas_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/juego_provider.dart';
@@ -26,6 +25,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   PuzzleState? puzzleState;
   List<Uint8List>? piezas;
   bool cargando = true;
+  bool _juegoGuardado = false; // evita guardar estadísticas más de una vez
   final int gridSize = 3;
   Uint8List? imagenFondo;
 
@@ -36,7 +36,10 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   }
 
   Future<void> _cargarJuego() async {
-    setState(() => cargando = true);
+    setState(() {
+      cargando = true;
+      _juegoGuardado = false;
+    });
     final String url = await apiService.obtenerImagenUrlPuzzle();
     final Uint8List imagen = await apiService.obtenerImagenBytes(url);
     final Uint8List imagenCuadrada = apiService.hacerCuadrada(imagen);
@@ -50,18 +53,17 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   }
 
   void _onJuegoCompletado() {
+    if (_juegoGuardado) return; // evitar llamadas duplicadas
+    _juegoGuardado = true;
+
     final perfilProvider = context.read<PerfilProvider>();
     final juegoProvider = context.read<JuegoProvider>();
     final estadisticasProvider = context.read<EstadisticasProvider>();
 
     if (perfilProvider.perfilActivo == null) return;
 
-    const int puntos = 50; // puzzle vale 50 puntos fijos
+    perfilProvider.actualizarPuntos(50);
 
-    // Actualizar puntos del perfil
-    perfilProvider.actualizarPuntos(puntos);
-
-    // Guardar estadísticas
     juegoProvider.iniciarJuego(JuegoPuzzle(
       id: 'puzzle',
       nombre: 'Puzzle',
@@ -69,6 +71,8 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
       icono: 'assets/images/logo_puzzle.png',
       url: '',
     ));
+    juegoProvider.registrarAcierto();
+
     final estadistica = juegoProvider.finalizarJuego(
       perfilProvider.perfilActivo!.id,
     );
@@ -101,7 +105,10 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       shadows: [
-                        Shadow(color: Colors.black45, blurRadius: 4, offset: Offset(1, 1)),
+                        Shadow(
+                            color: Colors.black45,
+                            blurRadius: 4,
+                            offset: Offset(1, 1)),
                       ],
                     ),
                   ),
@@ -142,9 +149,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
       child: puzzleState!.finalizado
           ? Stack(
         children: [
-          // Puzzle resuelto de fondo
           tableros,
-          // Overlay semitransparente
           Container(
             padding: const EdgeInsets.only(left: 600),
             alignment: Alignment.center,
@@ -152,7 +157,6 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Título arcoíris
                 RichText(
                   text: TextSpan(
                     style: const TextStyle(
@@ -160,7 +164,10 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                       fontSize: 80,
                       fontWeight: FontWeight.w900,
                       shadows: [
-                        Shadow(color: Colors.black45, blurRadius: 8, offset: Offset(2, 2)),
+                        Shadow(
+                            color: Colors.black45,
+                            blurRadius: 8,
+                            offset: Offset(2, 2)),
                       ],
                     ),
                     children: [
@@ -188,7 +195,10 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                       fontSize: 40,
                       fontWeight: FontWeight.w900,
                       shadows: [
-                        Shadow(color: Colors.black45, blurRadius: 4, offset: Offset(1, 1)),
+                        Shadow(
+                            color: Colors.black45,
+                            blurRadius: 4,
+                            offset: Offset(1, 1)),
                       ],
                     ),
                     children: [
@@ -222,7 +232,8 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                 ScalePulse(
                   onTap: _cargarJuego,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 16),
                     decoration: AppTema.decoracionBotonNaranja,
                     child: const Text(
                       "¡Otro puzzle!",
@@ -247,6 +258,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         puzzleState!.moverPiezaPrincipal(index);
       }
     });
+    if (puzzleState!.finalizado) _onJuegoCompletado();
   }
 
   void _onTapPieza(int index) {
@@ -271,6 +283,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         }
       }
     });
+    if (puzzleState!.finalizado) _onJuegoCompletado();
   }
 
   void _onDragIniciado(int? valorPieza) {

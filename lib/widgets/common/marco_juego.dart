@@ -9,7 +9,7 @@ class MarcoJuego extends StatelessWidget {
   final Widget child;
   final VoidCallback onSalir;
   final VoidCallback onReiniciar;
-  final Widget? cabeceraExtra; // ← nuevo
+  final Widget? cabeceraExtra;
 
   const MarcoJuego({
     super.key,
@@ -17,7 +17,7 @@ class MarcoJuego extends StatelessWidget {
     required this.child,
     required this.onSalir,
     required this.onReiniciar,
-    this.cabeceraExtra, // ← nuevo
+    this.cabeceraExtra,
   });
 
   @override
@@ -39,118 +39,132 @@ class MarcoJuego extends StatelessWidget {
             child: Column(
               children: [
                 // ── CABECERA ────────────────────────────
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 14,
-                          horizontal: AppTema.espaciadoGrande),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Color(0xFF1A237E), Color(0xFF283593)],
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.4),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                        border: Border(
-                          bottom: BorderSide(
-                            color: AppTema.naranja.withOpacity(0.6),
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        titulo,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontFamily: 'Nunito',
-                          color: Colors.white,
-                          fontSize: 32,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.2,
-                          shadows: [
-                            Shadow(
-                                color: Colors.black45,
-                                blurRadius: 6,
-                                offset: Offset(1, 2)),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (perfil != null)
-                      Positioned(
-                        left: 12,
-                        top: 0,
-                        bottom: 0,
-                        child: Center(
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8),
+                  child: SizedBox(
+                    height: 80,
+                    child: Stack(
+                      children: [
+                        // ── TÍTULO — centro absoluto ───
+                        Align(
+                          alignment: Alignment.center,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 8),
+                                horizontal: 40, vertical: 12),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.95),
+                              gradient: const LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Color(0xFF1A237E),
+                                  Color(0xFF283593),
+                                ],
+                              ),
                               borderRadius: AppTema.radiusGrande,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
+                                  color: Colors.black.withOpacity(0.4),
                                   blurRadius: 8,
                                   offset: const Offset(0, 4),
                                 ),
                               ],
+                              border: Border.all(
+                                color: AppTema.naranja.withOpacity(0.6),
+                                width: 2,
+                              ),
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: AppTema.radiusCirculo,
-                                  child: Image.asset(
-                                    perfil.avatar,
-                                    width: 56,
-                                    height: 56,
-                                    fit: BoxFit.cover,
+                            child: Text(
+                              'Juego $titulo',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontFamily: 'Nunito',
+                                color: Colors.white,
+                                fontSize: 32,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.2,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black45,
+                                    blurRadius: 6,
+                                    offset: Offset(1, 2),
                                   ),
-                                ),
-                                const SizedBox(width: AppTema.espaciadoSmall),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      perfil.nombre,
-                                      style: const TextStyle(
-                                        fontFamily: 'Nunito',
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppTema.azulOscuro,
-                                      ),
-                                    ),
-                                    Text(
-                                      '⭐ ${perfil.puntuacionTotal} pts',
-                                      style: AppTema.textoPuntos
-                                          .copyWith(fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    if (cabeceraExtra != null)
-                      Positioned(
-                        right: 12,
-                        top: 0,
-                        bottom: 0,
-                        child: Center(child: cabeceraExtra!),
-                      ),
-                  ],
+                        // ── TARJETA PERFIL — izquierda ─
+                        if (perfil != null)
+                          Positioned(
+                            left: 0,
+                            top: 0,
+                            bottom: 0,
+                            child: Center(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.95),
+                                  borderRadius: AppTema.radiusGrande,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: AppTema.radiusCirculo,
+                                      child: Image.asset(
+                                        perfil.avatar,
+                                        width: 80,
+                                        height: 80,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 30, height: 40,),
+                                    Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          perfil.nombre,
+                                          style: const TextStyle(
+                                            fontFamily: 'Nunito',
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppTema.azulOscuro,
+                                          ),
+                                        ),
+                                        Text(
+                                          '⭐ ${perfil.puntuacionTotal} pts',
+                                          style: AppTema.textoPuntos
+                                              .copyWith(fontSize: 18),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        // ── CABECERA EXTRA — derecha ───
+                        if (cabeceraExtra != null)
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            bottom: 0,
+                            child: Center(child: cabeceraExtra!),
+                          ),
+                      ],
+                    ),
+                  ),
                 ),
                 // ── CONTENIDO DEL JUEGO ─────────────────
                 Expanded(
