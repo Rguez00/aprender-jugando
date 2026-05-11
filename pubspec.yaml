@@ -53,6 +53,9 @@ flutter:
     - assets/images/pajaro.png
     - assets/images/poyo.png
     - assets/images/zanahoria.png
+    - assets/images/salir_cuadrado.png
+    - assets/images/reiniciar_cuadrado.png
+    - assets/images/jugar_de_nuevo_redondo.png
   fonts:
     - family: Nunito
       fonts:

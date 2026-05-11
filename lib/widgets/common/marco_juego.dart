@@ -75,7 +75,7 @@ class MarcoJuego extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              'Juego $titulo',
+                              titulo,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontFamily: 'Nunito',
@@ -127,7 +127,7 @@ class MarcoJuego extends StatelessWidget {
                                         fit: BoxFit.cover,
                                       ),
                                     ),
-                                    const SizedBox(width: 30, height: 40,),
+                                    const SizedBox(width: 30),
                                     Column(
                                       crossAxisAlignment:
                                       CrossAxisAlignment.start,
@@ -179,25 +179,16 @@ class MarcoJuego extends StatelessWidget {
                       horizontal: AppTema.espaciadoExtraGrande,
                       vertical: AppTema.espaciadoMedio),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: _BotonMarco(
-                          label: 'Salir',
-                          icono: Icons.exit_to_app_rounded,
-                          gradiente: AppTema.gradienteRojo,
-                          colorSombra: AppTema.rojo,
-                          onTap: onSalir,
-                        ),
+                      _BotonMarco(
+                        imagen: 'assets/images/salir_cuadrado.png',
+                        onTap: onSalir,
                       ),
                       const SizedBox(width: AppTema.espaciadoGrande),
-                      Expanded(
-                        child: _BotonMarco(
-                          label: 'Reiniciar',
-                          icono: Icons.refresh_rounded,
-                          gradiente: AppTema.gradienteNaranja,
-                          colorSombra: AppTema.naranja,
-                          onTap: onReiniciar,
-                        ),
+                      _BotonMarco(
+                        imagen: 'assets/images/reiniciar_cuadrado.png',
+                        onTap: onReiniciar,
                       ),
                     ],
                   ),
@@ -213,17 +204,11 @@ class MarcoJuego extends StatelessWidget {
 
 // ── WIDGET PRIVADO BOTÓN ─────────────────────────────────────────────────────
 class _BotonMarco extends StatelessWidget {
-  final String label;
-  final IconData icono;
-  final LinearGradient gradiente;
-  final Color colorSombra;
+  final String imagen;
   final VoidCallback onTap;
 
   const _BotonMarco({
-    required this.label,
-    required this.icono,
-    required this.gradiente,
-    required this.colorSombra,
+    required this.imagen,
     required this.onTap,
   });
 
@@ -231,31 +216,11 @@ class _BotonMarco extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScalePulse(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(
-          gradient: gradiente,
-          borderRadius: AppTema.radiusMedio,
-          boxShadow: [
-            BoxShadow(
-              color: colorSombra.withOpacity(0.45),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
-          border: Border.all(
-            color: Colors.white.withOpacity(0.15),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icono, color: Colors.white, size: 22),
-            const SizedBox(width: 8),
-            Text(label, style: AppTema.textoBoton),
-          ],
-        ),
+      child: Image.asset(
+        imagen,
+        height: 100,
+        width: 200,
+        fit: BoxFit.contain,
       ),
     );
   }

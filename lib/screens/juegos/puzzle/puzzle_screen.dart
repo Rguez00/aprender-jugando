@@ -131,7 +131,6 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
           onDragPieza: _onDragPieza,
           onDragIniciado: _onDragIniciado,
         ),
-        const SizedBox(width: 16),
         TableroSecundario(
           piezas: piezas!,
           puzzleState: puzzleState!,
@@ -231,14 +230,10 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                 const SizedBox(height: 32),
                 ScalePulse(
                   onTap: _cargarJuego,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 16),
-                    decoration: AppTema.decoracionBotonNaranja,
-                    child: const Text(
-                      "¡Otro puzzle!",
-                      style: AppTema.textoBoton,
-                    ),
+                  child: Image.asset(
+                    'assets/images/jugar_de_nuevo_redondo.png',
+                    height: 180,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ],

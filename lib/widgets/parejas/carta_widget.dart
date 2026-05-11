@@ -36,18 +36,12 @@ class _CartaWidgetState extends State<CartaWidget>
   @override
   void didUpdateWidget(CartaWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Oculta → Volteada: animar hacia adelante
-    if (oldWidget.estado == EstadoCarta.oculta &&
-        widget.estado != EstadoCarta.oculta) {
-      _controller.forward();
-    }
-    // Volteada → Oculta: animar hacia atrás
-    if (oldWidget.estado == EstadoCarta.volteada &&
-        widget.estado == EstadoCarta.oculta) {
+
+    if (widget.estado == EstadoCarta.oculta) {
+      // Siempre volver al reverso al reiniciar
       _controller.reverse();
-    }
-    // Emparejada: quedarse volteada sin animar
-    if (widget.estado == EstadoCarta.emparejada) {
+    } else if (widget.estado == EstadoCarta.volteada ||
+        widget.estado == EstadoCarta.emparejada) {
       _controller.forward();
     }
   }

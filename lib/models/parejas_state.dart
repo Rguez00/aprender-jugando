@@ -22,12 +22,12 @@ class ParejasState {
   factory ParejasState.inicial(List<String> todasLasImagenes) {
     // Seleccionar 8 imágenes aleatorias del pool y duplicarlas
     final shuffled = List<String>.from(todasLasImagenes)..shuffle(Random());
-    final seleccionadas = shuffled.take(8).toList();
+    final seleccionadas = shuffled.take(6).toList();
     final parejas = [...seleccionadas, ...seleccionadas]..shuffle(Random());
 
     return ParejasState(
       imagenCelda: parejas,
-      estado: List.filled(16, EstadoCarta.oculta),
+      estado: List.filled(12, EstadoCarta.oculta),
     );
   }
 

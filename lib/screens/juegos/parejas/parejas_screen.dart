@@ -83,12 +83,12 @@ class _ParejasScreenState extends State<ParejasScreen> {
 
     final puntos = _calcularPuntos();
     // Aciertos = 8 parejas encontradas, errores = intentos fallidos
-    final errores = (_estado.intentos - 8).clamp(0, 999);
+    final errores = (_estado.intentos - 6).clamp(0, 999);
 
     perfilProvider.actualizarPuntos(puntos);
 
     juegoProvider.iniciarJuego(JuegoParejas());
-    for (var i = 0; i < 8; i++) juegoProvider.registrarAcierto();
+    for (var i = 0; i < 6; i++) juegoProvider.registrarAcierto();
     for (var i = 0; i < errores; i++) juegoProvider.registrarErrores();
 
     final estadistica = juegoProvider.finalizarJuego(
@@ -100,7 +100,7 @@ class _ParejasScreenState extends State<ParejasScreen> {
   int _calcularPuntos() {
     // Base 100 puntos, -5 por cada intento extra (mínimo 10)
     const base = 100;
-    final extra = (_estado.intentos - 8).clamp(0, 999);
+    final extra = (_estado.intentos - 6).clamp(0, 999);
     return (base - extra * 5).clamp(10, base);
   }
 
@@ -150,23 +150,31 @@ class _ParejasScreenState extends State<ParejasScreen> {
   Widget _buildTablero() {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final size = constraints.maxWidth < constraints.maxHeight
-            ? constraints.maxWidth
-            : constraints.maxHeight;
+        final anchoMaximo = constraints.maxWidth;
+        final altoMaximo = constraints.maxHeight;
+
+        // Celda que cabe respetando 4 col y 3 filas
+        final celdaPorAncho = (anchoMaximo - 8 * 3) / 4;
+        final celdaPorAlto  = (altoMaximo  - 8 * 2) / 3;
+        final celdaSize = celdaPorAncho < celdaPorAlto
+            ? celdaPorAncho
+            : celdaPorAlto;
+
+        final gridAncho = celdaSize * 4 + 8 * 3;
+        final gridAlto  = celdaSize * 3 + 8 * 2;
 
         return Center(
           child: SizedBox(
-            width: size,
-            height: size,
+            width: gridAncho,
+            height: gridAlto,
             child: GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate:
-              const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
               ),
-              itemCount: 16,
+              itemCount: 12,
               itemBuilder: (context, indice) {
                 return GestureDetector(
                   onTap: () => _onCartaTocada(indice),
@@ -275,14 +283,11 @@ class _ParejasScreenState extends State<ParejasScreen> {
           ),
           const SizedBox(height: 32),
           ScalePulse(
-            onTap: _reiniciar,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-              decoration: AppTema.decoracionBotonNaranja,
-              child: const Text(
-                '¡Otra partida!',
-                style: AppTema.textoBoton,
-              ),
+            onTap: _reiniciar, // _cargarJuego en puzzle
+            child: Image.asset(
+              'assets/images/jugar_de_nuevo_redondo.png',
+              height: 180,
+              fit: BoxFit.contain,
             ),
           ),
         ],
