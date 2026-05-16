@@ -75,7 +75,7 @@ class MarcoJuego extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              titulo,
+                              "Juego $titulo",
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontFamily: 'Nunito',

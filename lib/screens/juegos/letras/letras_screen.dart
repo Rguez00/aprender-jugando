@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:proyecto_aprender_jugando/models/juego_parejas.dart';
+import 'package:proyecto_aprender_jugando/models/juego_letras.dart';
 import 'package:proyecto_aprender_jugando/models/letras_state.dart';
 import 'package:proyecto_aprender_jugando/models/palabra_model.dart';
 import 'package:proyecto_aprender_jugando/providers/estadisticas_provider.dart';
@@ -12,7 +12,6 @@ import 'package:proyecto_aprender_jugando/widgets/common/marco_juego.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/scale_pulse.dart';
 import 'package:proyecto_aprender_jugando/widgets/letras/bloque_letra.dart';
 import 'package:proyecto_aprender_jugando/widgets/letras/hueco_letra.dart';
-import 'package:proyecto_aprender_jugando/models/juego_letras.dart';
 
 const int kPalabrasPorPartida = 5;
 
@@ -28,7 +27,7 @@ class _LetrasScreenState extends State<LetrasScreen> {
   late LetrasState _estadoActual;
   int _indicePalabra = 0;
   int _puntosTotal = 0;
-  bool _comprobando = false; // bloquea interacción mientras anima resultado
+  bool _comprobando = false;
   bool _palabraCorrecta = false;
   List<bool> _hucosCorrectos = [];
 
@@ -89,7 +88,6 @@ class _LetrasScreenState extends State<LetrasScreen> {
     });
 
     if (_estadoActual.correcto) {
-      // Suma puntos
       final puntos = _estadoActual.conErrores ? 10 : 20;
       _puntosTotal += puntos;
 
@@ -103,12 +101,17 @@ class _LetrasScreenState extends State<LetrasScreen> {
         }
       });
     } else {
-      // Incorrecta: marcar error y dejar borrar
       setState(() => _estadoActual.conErrores = true);
-      Future.delayed(const Duration(milliseconds: 800), () {
+
+      Future.delayed(const Duration(milliseconds: 2000), () {
         if (!mounted) return;
         setState(() {
-          _estadoActual.borrarUltima();
+          final letrasCorrectas = _estadoActual.palabra.palabra.split('');
+          for (int i = 0; i < _estadoActual.huecos.length; i++) {
+            if (_estadoActual.huecos[i] != letrasCorrectas[i]) {
+              _estadoActual.huecos[i] = null;
+            }
+          }
           _comprobando = false;
           _hucosCorrectos = List.filled(
               _estadoActual.palabra.palabra.length, true);
@@ -126,7 +129,7 @@ class _LetrasScreenState extends State<LetrasScreen> {
 
     perfilProvider.actualizarPuntos(_puntosTotal);
 
-    juegoProvider.iniciarJuego(JuegoLetras()); // reutilizamos modelo base
+    juegoProvider.iniciarJuego(JuegoLetras());
     for (var i = 0; i < kPalabrasPorPartida; i++) juegoProvider.registrarAcierto();
 
     final estadistica = juegoProvider.finalizarJuego(
@@ -140,7 +143,6 @@ class _LetrasScreenState extends State<LetrasScreen> {
   }
 
   bool _letraUsada(int indice) {
-    // Cuenta cuántas veces aparece esta letra en la palabra
     final letra = _estadoActual.letrasDisponibles[indice];
     final vecesEnPalabra = _estadoActual.palabra.palabra
         .split('')
@@ -149,7 +151,6 @@ class _LetrasScreenState extends State<LetrasScreen> {
     final vecesEnHuecos = _estadoActual.huecos
         .where((h) => h == letra)
         .length;
-    // Cuenta las letras iguales anteriores en letrasDisponibles
     final igualesAnteriores = _estadoActual.letrasDisponibles
         .sublist(0, indice)
         .where((l) => l == letra)
@@ -165,7 +166,7 @@ class _LetrasScreenState extends State<LetrasScreen> {
         _comprobando;
 
     return MarcoJuego(
-      titulo: 'Juego Letras',
+      titulo: 'Letras',
       onSalir: () => Navigator.pop(context),
       onReiniciar: _reiniciar,
       cabeceraExtra: Container(

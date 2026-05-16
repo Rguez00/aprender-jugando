@@ -16,16 +16,17 @@ class ResponsiveGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(0),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: columns,
-        crossAxisSpacing: 0,
-        mainAxisSpacing: 0,
-        childAspectRatio: 1,
+    return SizedBox(
+      width: size,
+      height: size,
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: columns,
+        ),
+        itemCount: columns * rows,
+        itemBuilder: (context, index) => itemBuilder(index),
       ),
-      itemCount: columns * rows,
-      itemBuilder: (context, index) => itemBuilder(index),
     );
   }
 }

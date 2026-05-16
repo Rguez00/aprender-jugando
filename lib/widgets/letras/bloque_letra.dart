@@ -36,24 +36,19 @@ class BloqueLetra extends StatelessWidget {
         width: 64,
         height: 64,
         decoration: BoxDecoration(
-          color: color,
+          color: Colors.white.withOpacity(0.3),  // ← igual que hueco vacío
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.6),  // ← igual que hueco vacío
+            width: 2.5,
+          ),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.5),
-              blurRadius: 6,
-              offset: const Offset(0, 4),
-            ),
-            BoxShadow(
-              color: Colors.white.withOpacity(0.3),
-              blurRadius: 2,
-              offset: const Offset(0, -2),
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
             ),
           ],
-          border: Border.all(
-            color: Colors.white.withOpacity(0.4),
-            width: 2,
-          ),
         ),
         child: Center(
           child: Text(
@@ -88,19 +83,19 @@ class BloqueLetra extends StatelessWidget {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: color,
+              color: Colors.white.withOpacity(0.5),
               borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.8),
+                width: 2.5,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.7),
+                  color: Colors.black.withOpacity(0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 6),
                 ),
               ],
-              border: Border.all(
-                color: Colors.white.withOpacity(0.6),
-                width: 2,
-              ),
             ),
             child: Center(
               child: Text(
