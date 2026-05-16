@@ -1,17 +1,17 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:proyecto_aprender_jugando/models/puzzle_state.dart';
-import 'package:proyecto_aprender_jugando/services/api_service.dart';
-import 'package:proyecto_aprender_jugando/utils/tema.dart';
-import 'package:proyecto_aprender_jugando/widgets/common/marco_juego.dart';
-import 'package:proyecto_aprender_jugando/widgets/common/scale_pulse.dart';
-import 'package:proyecto_aprender_jugando/widgets/puzzle/tablero_principal.dart';
-import 'package:proyecto_aprender_jugando/widgets/puzzle/tablero_secundario.dart';
-import 'package:provider/provider.dart';
 import 'package:proyecto_aprender_jugando/models/juego_puzzle.dart';
+import 'package:proyecto_aprender_jugando/models/puzzle_state.dart';
 import 'package:proyecto_aprender_jugando/providers/estadisticas_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/juego_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/perfil_provider.dart';
+import 'package:proyecto_aprender_jugando/services/api_service.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/marco_juego.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/scale_pulse.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/texto_arcoiris.dart';
+import 'package:proyecto_aprender_jugando/widgets/puzzle/tablero_principal.dart';
+import 'package:proyecto_aprender_jugando/widgets/puzzle/tablero_secundario.dart';
+import 'package:provider/provider.dart';
 
 class PuzzleScreen extends StatefulWidget {
   const PuzzleScreen({super.key});
@@ -25,7 +25,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   PuzzleState? puzzleState;
   List<Uint8List>? piezas;
   bool cargando = true;
-  bool _juegoGuardado = false; // evita guardar estadísticas más de una vez
+  bool _juegoGuardado = false;
   final int gridSize = 3;
   Uint8List? imagenFondo;
 
@@ -43,7 +43,8 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
     final String url = await apiService.obtenerImagenUrlPuzzle();
     final Uint8List imagen = await apiService.obtenerImagenBytes(url);
     final Uint8List imagenCuadrada = apiService.hacerCuadrada(imagen);
-    List<Uint8List> listaPiezas = apiService.dividirImagen(imagenCuadrada, gridSize);
+    final List<Uint8List> listaPiezas =
+    apiService.dividirImagen(imagenCuadrada, gridSize);
     setState(() {
       piezas = listaPiezas;
       puzzleState = PuzzleState.inicial(gridSize);
@@ -53,7 +54,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   }
 
   void _onJuegoCompletado() {
-    if (_juegoGuardado) return; // evitar llamadas duplicadas
+    if (_juegoGuardado) return;
     _juegoGuardado = true;
 
     final perfilProvider = context.read<PerfilProvider>();
@@ -98,7 +99,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                   CircularProgressIndicator(color: Colors.white),
                   SizedBox(height: 16),
                   Text(
-                    "Cargando puzzle...",
+                    'Cargando puzzle...',
                     style: TextStyle(
                       fontFamily: 'Nunito',
                       color: Colors.white,
@@ -142,7 +143,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
     );
 
     return MarcoJuego(
-      titulo: "Puzzle",
+      titulo: 'Puzzle',
       onSalir: () => Navigator.pop(context),
       onReiniciar: _cargarJuego,
       child: puzzleState!.finalizado
@@ -156,83 +157,18 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                RichText(
-                  text: TextSpan(
-                    style: const TextStyle(
-                      fontFamily: 'Nunito',
-                      fontSize: 80,
-                      fontWeight: FontWeight.w900,
-                      shadows: [
-                        Shadow(
-                            color: Colors.black45,
-                            blurRadius: 8,
-                            offset: Offset(2, 2)),
-                      ],
-                    ),
-                    children: [
-                      TextSpan(text: '¡', style: TextStyle(color: Colors.orange[700])),
-                      TextSpan(text: 'F', style: TextStyle(color: Colors.red[400])),
-                      TextSpan(text: 'E', style: TextStyle(color: Colors.orange[600])),
-                      TextSpan(text: 'L', style: TextStyle(color: Colors.yellow[300])),
-                      TextSpan(text: 'I', style: TextStyle(color: Colors.green[400])),
-                      TextSpan(text: 'C', style: TextStyle(color: Colors.blue[300])),
-                      TextSpan(text: 'I', style: TextStyle(color: Colors.purple[300])),
-                      TextSpan(text: 'D', style: TextStyle(color: Colors.red[400])),
-                      TextSpan(text: 'A', style: TextStyle(color: Colors.orange[600])),
-                      TextSpan(text: 'D', style: TextStyle(color: Colors.yellow[300])),
-                      TextSpan(text: 'E', style: TextStyle(color: Colors.green[400])),
-                      TextSpan(text: 'S', style: TextStyle(color: Colors.blue[300])),
-                      TextSpan(text: '!', style: TextStyle(color: Colors.purple[300])),
-                    ],
-                  ),
-                ),
+                const TextoArcoiris(texto: '¡FELICIDADES!'),
                 const SizedBox(height: 16),
-                RichText(
-                  text: TextSpan(
-                    style: const TextStyle(
-                      fontFamily: 'Nunito',
-                      fontSize: 40,
-                      fontWeight: FontWeight.w900,
-                      shadows: [
-                        Shadow(
-                            color: Colors.black45,
-                            blurRadius: 4,
-                            offset: Offset(1, 1)),
-                      ],
-                    ),
-                    children: [
-                      TextSpan(text: '¡', style: TextStyle(color: Colors.orange[700])),
-                      TextSpan(text: 'H', style: TextStyle(color: Colors.red[400])),
-                      TextSpan(text: 'a', style: TextStyle(color: Colors.orange[600])),
-                      TextSpan(text: 's', style: TextStyle(color: Colors.yellow[600])),
-                      TextSpan(text: ' c', style: TextStyle(color: Colors.green[400])),
-                      TextSpan(text: 'o', style: TextStyle(color: Colors.blue[300])),
-                      TextSpan(text: 'm', style: TextStyle(color: Colors.purple[300])),
-                      TextSpan(text: 'p', style: TextStyle(color: Colors.red[400])),
-                      TextSpan(text: 'l', style: TextStyle(color: Colors.orange[600])),
-                      TextSpan(text: 'e', style: TextStyle(color: Colors.yellow[600])),
-                      TextSpan(text: 't', style: TextStyle(color: Colors.green[400])),
-                      TextSpan(text: 'a', style: TextStyle(color: Colors.blue[300])),
-                      TextSpan(text: 'd', style: TextStyle(color: Colors.purple[300])),
-                      TextSpan(text: 'o', style: TextStyle(color: Colors.red[400])),
-                      TextSpan(text: ' e', style: TextStyle(color: Colors.orange[600])),
-                      TextSpan(text: 'l', style: TextStyle(color: Colors.yellow[600])),
-                      TextSpan(text: ' p', style: TextStyle(color: Colors.green[400])),
-                      TextSpan(text: 'u', style: TextStyle(color: Colors.blue[300])),
-                      TextSpan(text: 'z', style: TextStyle(color: Colors.purple[300])),
-                      TextSpan(text: 'z', style: TextStyle(color: Colors.red[400])),
-                      TextSpan(text: 'l', style: TextStyle(color: Colors.orange[600])),
-                      TextSpan(text: 'e', style: TextStyle(color: Colors.yellow[600])),
-                      TextSpan(text: '!', style: TextStyle(color: Colors.green[400])),
-                    ],
-                  ),
+                const TextoArcoiris(
+                  texto: '¡Has completado el puzzle!',
+                  fontSize: 40,
                 ),
                 const SizedBox(height: 32),
                 ScalePulse(
                   onTap: _cargarJuego,
                   child: Image.asset(
                     'assets/images/jugar_de_nuevo_redondo.png',
-                    height: 180,
+                    height: 120,
                     fit: BoxFit.contain,
                   ),
                 ),

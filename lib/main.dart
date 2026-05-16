@@ -5,7 +5,7 @@ import 'package:proyecto_aprender_jugando/providers/estadisticas_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/juego_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/perfil_provider.dart';
 import 'package:proyecto_aprender_jugando/screens/juegos/puzzle/puzzle_screen.dart';
-import 'package:proyecto_aprender_jugando/screens/splash/splash_screen.dart';
+import 'package:proyecto_aprender_jugando/screens/juegos/splash/splash_screen.dart';
 import 'package:proyecto_aprender_jugando/utils/tema.dart';
 
 void main() async {

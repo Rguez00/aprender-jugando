@@ -8,7 +8,9 @@ import 'package:proyecto_aprender_jugando/providers/estadisticas_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/juego_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/perfil_provider.dart';
 import 'package:proyecto_aprender_jugando/utils/tema.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/contador_juego.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/marco_juego.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/pantalla_felicitacion.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/scale_pulse.dart';
 import 'package:proyecto_aprender_jugando/widgets/letras/bloque_letra.dart';
 import 'package:proyecto_aprender_jugando/widgets/letras/hueco_letra.dart';
@@ -58,12 +60,8 @@ class _LetrasScreenState extends State<LetrasScreen> {
   void _onLetraTocada(String letra, int indice) {
     if (_comprobando) return;
     if (!_estadoActual.completo) {
-      setState(() {
-        _estadoActual.colocarLetra(letra);
-      });
-      if (_estadoActual.completo) {
-        _comprobarPalabra();
-      }
+      setState(() => _estadoActual.colocarLetra(letra));
+      if (_estadoActual.completo) _comprobarPalabra();
     }
   }
 
@@ -169,30 +167,16 @@ class _LetrasScreenState extends State<LetrasScreen> {
       titulo: 'Letras',
       onSalir: () => Navigator.pop(context),
       onReiniciar: _reiniciar,
-      cabeceraExtra: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: AppTema.dorado,
-          borderRadius: AppTema.radiusMedio,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Text(
-          '📝 ${_indicePalabra + 1} / $kPalabrasPorPartida',
-          style: const TextStyle(
-            fontFamily: 'Nunito',
-            fontSize: 18,
-            fontWeight: FontWeight.w900,
-            color: AppTema.azulOscuro,
-          ),
-        ),
+      cabeceraExtra: ContadorJuego(
+        texto: '📝 ${_indicePalabra + 1} / $kPalabrasPorPartida',
       ),
-      child: finalizado ? _buildFelicitacion() : _buildJuego(),
+      child: finalizado
+          ? PantallaFelicitacion(
+        subtitulo: '¡Has completado todas las palabras!',
+        infoPuntos: 'Puntos conseguidos: $_puntosTotal',
+        onJugarDeNuevo: _reiniciar,
+      )
+          : _buildJuego(),
     );
   }
 
@@ -246,7 +230,8 @@ class _LetrasScreenState extends State<LetrasScreen> {
                       (i) => HuecoLetra(
                     letra: _estadoActual.huecos[i],
                     esCorrecta: _hucosCorrectos[i],
-                    onLetraSoltada: (_comprobando || _estadoActual.huecos[i] != null)
+                    onLetraSoltada:
+                    (_comprobando || _estadoActual.huecos[i] != null)
                         ? null
                         : (letra) {
                       setState(() {
@@ -308,87 +293,12 @@ class _LetrasScreenState extends State<LetrasScreen> {
               letra: _estadoActual.letrasDisponibles[i],
               indice: i,
               usada: _letraUsada(i),
-              onTap: () => _onLetraTocada(
-                  _estadoActual.letrasDisponibles[i], i),
+              onTap: () =>
+                  _onLetraTocada(_estadoActual.letrasDisponibles[i], i),
             ),
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildFelicitacion() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RichText(
-            text: TextSpan(
-              style: const TextStyle(
-                fontFamily: 'Nunito',
-                fontSize: 80,
-                fontWeight: FontWeight.w900,
-                shadows: [
-                  Shadow(
-                      color: Colors.black45,
-                      blurRadius: 8,
-                      offset: Offset(2, 2)),
-                ],
-              ),
-              children: [
-                TextSpan(text: '¡', style: TextStyle(color: Colors.orange[700])),
-                TextSpan(text: 'F', style: TextStyle(color: Colors.red[400])),
-                TextSpan(text: 'E', style: TextStyle(color: Colors.orange[600])),
-                TextSpan(text: 'L', style: TextStyle(color: Colors.yellow[300])),
-                TextSpan(text: 'I', style: TextStyle(color: Colors.green[400])),
-                TextSpan(text: 'C', style: TextStyle(color: Colors.blue[300])),
-                TextSpan(text: 'I', style: TextStyle(color: Colors.purple[300])),
-                TextSpan(text: 'D', style: TextStyle(color: Colors.red[400])),
-                TextSpan(text: 'A', style: TextStyle(color: Colors.orange[600])),
-                TextSpan(text: 'D', style: TextStyle(color: Colors.yellow[300])),
-                TextSpan(text: 'E', style: TextStyle(color: Colors.green[400])),
-                TextSpan(text: 'S', style: TextStyle(color: Colors.blue[300])),
-                TextSpan(text: '!', style: TextStyle(color: Colors.purple[300])),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            '¡Has completado todas las palabras!',
-            style: TextStyle(
-              fontFamily: 'Nunito',
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white.withOpacity(0.95),
-              shadows: const [
-                Shadow(
-                    color: Colors.black38,
-                    blurRadius: 4,
-                    offset: Offset(1, 1)),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Puntos conseguidos: $_puntosTotal',
-            style: TextStyle(
-              fontFamily: 'Nunito',
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white.withOpacity(0.9),
-            ),
-          ),
-          const SizedBox(height: 32),
-          ScalePulse(
-            onTap: _reiniciar,
-            child: Image.asset(
-              'assets/images/jugar_de_nuevo_redondo.png',
-              height: 180,
-              fit: BoxFit.contain,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

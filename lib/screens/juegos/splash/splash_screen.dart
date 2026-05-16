@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../home/home_screen.dart';
+import '../../home/home_screen.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,10 +19,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navegar() async {
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
+    if (!mounted) return; // ← añadir esta línea
     Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen())
+      context,
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
     );
   }
   @override

@@ -6,8 +6,9 @@ import 'package:proyecto_aprender_jugando/providers/estadisticas_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/juego_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/perfil_provider.dart';
 import 'package:proyecto_aprender_jugando/utils/tema.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/contador_juego.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/marco_juego.dart';
-import 'package:proyecto_aprender_jugando/widgets/common/scale_pulse.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/pantalla_felicitacion.dart';
 
 const int kTotalRondas = 5;
 
@@ -93,15 +94,9 @@ class _MatesScreenState extends State<MatesScreen> {
 
     if (perfilProvider.perfilActivo == null) return;
 
-    final puntos = _calcularPuntos();
-    perfilProvider.actualizarPuntos(puntos);
+    perfilProvider.actualizarPuntos(_calcularPuntos());
 
-    juegoProvider.iniciarJuego(JuegoMates(
-      id: 'mates',
-      nombre: 'Números',
-      descripcion: 'Sumas y restas del 1 al 10',
-      icono: 'assets/images/logo_mates.png',
-    ));
+    juegoProvider.iniciarJuego(JuegoMates());
     for (var i = 0; i < _aciertosTotal; i++) juegoProvider.registrarAcierto();
     for (var i = 0; i < _erroresTotal; i++) juegoProvider.registrarErrores();
 
@@ -117,30 +112,17 @@ class _MatesScreenState extends State<MatesScreen> {
       titulo: 'Números',
       onSalir: () => Navigator.pop(context),
       onReiniciar: _reiniciar,
-      cabeceraExtra: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: AppTema.dorado,
-          borderRadius: AppTema.radiusMedio,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Text(
-          '🔢 Ronda ${_estado.indiceRonda + 1} / $kTotalRondas',
-          style: const TextStyle(
-            fontFamily: 'Nunito',
-            fontSize: 18,
-            fontWeight: FontWeight.w900,
-            color: AppTema.azulOscuro,
-          ),
-        ),
+      cabeceraExtra: ContadorJuego(
+        texto: '🔢 Ronda ${_estado.indiceRonda + 1} / $kTotalRondas',
       ),
-      child: _estado.finalizado ? _buildFelicitacion() : _buildJuego(),
+      child: _estado.finalizado
+          ? PantallaFelicitacion(
+        subtitulo: '¡Has completado todos los números!',
+        infoPuntos:
+        '$_aciertosTotal aciertos  •  Puntos: ${_calcularPuntos()}',
+        onJugarDeNuevo: _reiniciar,
+      )
+          : _buildJuego(),
     );
   }
 
@@ -187,7 +169,8 @@ class _MatesScreenState extends State<MatesScreen> {
           fontWeight: FontWeight.w900,
           color: Colors.black,
           shadows: [
-            Shadow(color: Colors.black26, blurRadius: 4, offset: Offset(1, 2)),
+            Shadow(
+                color: Colors.black26, blurRadius: 4, offset: Offset(1, 2)),
           ],
         ),
       ),
@@ -197,15 +180,15 @@ class _MatesScreenState extends State<MatesScreen> {
   Widget _buildOperacion(int indiceOp) {
     final op = _estado.rondaActual[indiceOp];
     final colorGrupo1 = kColoresGrupo[indiceOp * 2 % kColoresGrupo.length];
-    final colorGrupo2 = kColoresGrupo[(indiceOp * 2 + 1) % kColoresGrupo.length];
+    final colorGrupo2 =
+    kColoresGrupo[(indiceOp * 2 + 1) % kColoresGrupo.length];
 
     Color? fondoHueco;
     Color? bordeHueco;
 
     if (op.resuelta) {
-      fondoHueco = op.correcta
-          ? const Color(0xFFE2EFDA)
-          : const Color(0xFFFFE7E7);
+      fondoHueco =
+      op.correcta ? const Color(0xFFE2EFDA) : const Color(0xFFFFE7E7);
       bordeHueco = op.correcta ? AppTema.verde : AppTema.rojo;
     }
 
@@ -234,7 +217,6 @@ class _MatesScreenState extends State<MatesScreen> {
               _buildSimbolo(op.simbolo),
               _buildNumeroOperacion('${op.numero2}'),
               _buildSimbolo('='),
-              // Hueco resultado
               DragTarget<int>(
                 onWillAcceptWithDetails: (d) =>
                 !_estado.numeroYaUsado(d.data) ||
@@ -257,24 +239,19 @@ class _MatesScreenState extends State<MatesScreen> {
                         border: Border.all(
                           color: destacado
                               ? Colors.yellow
-                              : bordeHueco ??
-                              Colors.black.withOpacity(0.4),
+                              : bordeHueco ?? Colors.black.withOpacity(0.4),
                           width: destacado ? 3 : 2,
                         ),
                       ),
                       child: Center(
                         child: Text(
-                          op.resuelta
-                              ? '${op.respuestaColocada}'
-                              : '?',
+                          op.resuelta ? '${op.respuestaColocada}' : '?',
                           style: TextStyle(
                             fontFamily: 'Nunito',
                             fontSize: 36,
                             fontWeight: FontWeight.w900,
                             color: op.resuelta
-                                ? (op.correcta
-                                ? AppTema.verde
-                                : AppTema.rojo)
+                                ? (op.correcta ? AppTema.verde : AppTema.rojo)
                                 : Colors.black54,
                           ),
                         ),
@@ -323,9 +300,7 @@ class _MatesScreenState extends State<MatesScreen> {
           color: Colors.black,
           shadows: [
             Shadow(
-                color: Colors.black26,
-                blurRadius: 3,
-                offset: Offset(1, 1)),
+                color: Colors.black26, blurRadius: 3, offset: Offset(1, 1)),
           ],
         ),
       ),
@@ -366,9 +341,8 @@ class _MatesScreenState extends State<MatesScreen> {
             : Colors.white.withOpacity(0.9),
         borderRadius: AppTema.radiusMedio,
         border: Border.all(
-          color: seleccionado
-              ? AppTema.naranja
-              : Colors.white.withOpacity(0.5),
+          color:
+          seleccionado ? AppTema.naranja : Colors.white.withOpacity(0.5),
           width: seleccionado ? 3 : 2,
         ),
         boxShadow: usado
@@ -388,87 +362,9 @@ class _MatesScreenState extends State<MatesScreen> {
             fontFamily: 'Nunito',
             fontSize: 36,
             fontWeight: FontWeight.w900,
-            color: usado
-                ? Colors.white.withOpacity(0.3)
-                : AppTema.azulOscuro,
+            color: usado ? Colors.white.withOpacity(0.3) : AppTema.azulOscuro,
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildFelicitacion() {
-    final puntos = _calcularPuntos();
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RichText(
-            text: TextSpan(
-              style: const TextStyle(
-                fontFamily: 'Nunito',
-                fontSize: 80,
-                fontWeight: FontWeight.w900,
-                shadows: [
-                  Shadow(
-                      color: Colors.black45,
-                      blurRadius: 8,
-                      offset: Offset(2, 2)),
-                ],
-              ),
-              children: [
-                TextSpan(text: '¡', style: TextStyle(color: Colors.orange[700])),
-                TextSpan(text: 'F', style: TextStyle(color: Colors.red[400])),
-                TextSpan(text: 'E', style: TextStyle(color: Colors.orange[600])),
-                TextSpan(text: 'L', style: TextStyle(color: Colors.yellow[300])),
-                TextSpan(text: 'I', style: TextStyle(color: Colors.green[400])),
-                TextSpan(text: 'C', style: TextStyle(color: Colors.blue[300])),
-                TextSpan(text: 'I', style: TextStyle(color: Colors.purple[300])),
-                TextSpan(text: 'D', style: TextStyle(color: Colors.red[400])),
-                TextSpan(text: 'A', style: TextStyle(color: Colors.orange[600])),
-                TextSpan(text: 'D', style: TextStyle(color: Colors.yellow[300])),
-                TextSpan(text: 'E', style: TextStyle(color: Colors.green[400])),
-                TextSpan(text: 'S', style: TextStyle(color: Colors.blue[300])),
-                TextSpan(text: '!', style: TextStyle(color: Colors.purple[300])),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            '$_aciertosTotal aciertos de ${kTotalRondas * 2}',
-            style: TextStyle(
-              fontFamily: 'Nunito',
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white.withOpacity(0.95),
-              shadows: const [
-                Shadow(
-                    color: Colors.black38,
-                    blurRadius: 4,
-                    offset: Offset(1, 1)),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Puntos conseguidos: $puntos',
-            style: TextStyle(
-              fontFamily: 'Nunito',
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white.withOpacity(0.9),
-            ),
-          ),
-          const SizedBox(height: 32),
-          ScalePulse(
-            onTap: _reiniciar,
-            child: Image.asset(
-              'assets/images/jugar_de_nuevo_redondo.png',
-              height: 120,
-              fit: BoxFit.contain,
-            ),
-          ),
-        ],
       ),
     );
   }

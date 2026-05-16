@@ -1,32 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../models/juego_parejas.dart';
-import '../../../models/parejas_state.dart';
-import '../../../providers/perfil_provider.dart';
-import '../../../utils/tema.dart';
-import '../../../widgets/common/marco_juego.dart';
-import '../../../widgets/common/scale_pulse.dart';
-import '../../../widgets/parejas/carta_widget.dart';
-import 'package:proyecto_aprender_jugando/models/estadisticas.dart';
-import 'package:proyecto_aprender_jugando/models/juego.dart';
+import 'package:proyecto_aprender_jugando/models/juego_parejas.dart';
+import 'package:proyecto_aprender_jugando/models/parejas_state.dart';
 import 'package:proyecto_aprender_jugando/providers/estadisticas_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/juego_provider.dart';
-
-// Pool completo de imágenes
-const List<String> _kPoolImagenes = [
-  'assets/images/arbol.png',
-  'assets/images/calabaza.png',
-  'assets/images/cerdo.png',
-  'assets/images/cesta.png',
-  'assets/images/coche.png',
-  'assets/images/flor.png',
-  'assets/images/fresa.png',
-  'assets/images/mundo.png',
-  'assets/images/oso.png',
-  'assets/images/pajaro.png',
-  'assets/images/poyo.png',
-  'assets/images/zanahoria.png',
-];
+import 'package:proyecto_aprender_jugando/providers/perfil_provider.dart';
+import 'package:proyecto_aprender_jugando/utils/constantes.dart';
+import 'package:proyecto_aprender_jugando/utils/tema.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/contador_juego.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/marco_juego.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/pantalla_felicitacion.dart';
+import 'package:proyecto_aprender_jugando/widgets/parejas/carta_widget.dart';
 
 class ParejasScreen extends StatefulWidget {
   const ParejasScreen({super.key});
@@ -37,19 +21,18 @@ class ParejasScreen extends StatefulWidget {
 
 class _ParejasScreenState extends State<ParejasScreen> {
   late ParejasState _estado;
-  bool _bloqueado = false; // evita tocar cartas durante el delay
+  bool _bloqueado = false;
 
   @override
   void initState() {
     super.initState();
-    _estado = ParejasState.inicial(_kPoolImagenes);
+    _reiniciar();
   }
 
   void _onCartaTocada(int indice) {
     if (_bloqueado) return;
     if (_estado.estado[indice] == EstadoCarta.emparejada) return;
     if (_estado.estado[indice] == EstadoCarta.volteada) return;
-    // Si ya hay dos volteadas sin comprobar, ignorar
     if (_estado.cartaSeleccionada != null &&
         _estado.cartaComprobar != null) return;
 
@@ -57,7 +40,6 @@ class _ParejasScreenState extends State<ParejasScreen> {
       _estado.seleccionarCasilla(indice);
     });
 
-    // Si ya se voltearon dos cartas, esperar y comprobar
     if (_estado.cartaComprobar != null) {
       _bloqueado = true;
       Future.delayed(const Duration(milliseconds: 1000), () {
@@ -66,10 +48,7 @@ class _ParejasScreenState extends State<ParejasScreen> {
           _estado.comprobarCartas();
           _bloqueado = false;
         });
-        // Si se completó el juego, sumar puntos
-        if (_estado.finalizado) {
-          _onJuegoCompletado();
-        }
+        if (_estado.finalizado) _onJuegoCompletado();
       });
     }
   }
@@ -82,7 +61,6 @@ class _ParejasScreenState extends State<ParejasScreen> {
     if (perfilProvider.perfilActivo == null) return;
 
     final puntos = _calcularPuntos();
-    // Aciertos = 8 parejas encontradas, errores = intentos fallidos
     final errores = (_estado.intentos - 6).clamp(0, 999);
 
     perfilProvider.actualizarPuntos(puntos);
@@ -98,7 +76,6 @@ class _ParejasScreenState extends State<ParejasScreen> {
   }
 
   int _calcularPuntos() {
-    // Base 100 puntos, -5 por cada intento extra (mínimo 10)
     const base = 100;
     final extra = (_estado.intentos - 6).clamp(0, 999);
     return (base - extra * 5).clamp(10, base);
@@ -106,44 +83,28 @@ class _ParejasScreenState extends State<ParejasScreen> {
 
   void _reiniciar() {
     setState(() {
-      _estado = ParejasState.inicial(_kPoolImagenes);
+      _estado = ParejasState.inicial(kImagenesObjetos);
       _bloqueado = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final puntos = _calcularPuntos();
     return MarcoJuego(
       titulo: 'Parejas',
       onSalir: () => Navigator.pop(context),
       onReiniciar: _reiniciar,
-      cabeceraExtra: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: AppTema.blanco,
-          borderRadius: AppTema.radiusMedio,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            '🎯 Intentos: ${_estado.intentos}',
-            style: const TextStyle(
-              fontFamily: 'Nunito',
-              fontSize: 34,
-              fontWeight: FontWeight.w900,
-              color: Colors.black54,
-            ),
-          ),
-        ),
+      cabeceraExtra: ContadorJuego(
+        texto: '🎯 Intentos: ${_estado.intentos}',
       ),
-      child: _estado.finalizado ? _buildFelicitacion() : _buildTablero(),
+      child: _estado.finalizado
+          ? PantallaFelicitacion(
+        subtitulo: '¡Has encontrado todas las parejas!',
+        infoPuntos: 'Intentos: ${_estado.intentos}  •  Puntos: $puntos',
+        onJugarDeNuevo: _reiniciar,
+      )
+          : _buildTablero(),
     );
   }
 
@@ -153,15 +114,13 @@ class _ParejasScreenState extends State<ParejasScreen> {
         final anchoMaximo = constraints.maxWidth;
         final altoMaximo = constraints.maxHeight;
 
-        // Celda que cabe respetando 4 col y 3 filas
         final celdaPorAncho = (anchoMaximo - 8 * 3) / 4;
-        final celdaPorAlto  = (altoMaximo  - 8 * 2) / 3;
-        final celdaSize = celdaPorAncho < celdaPorAlto
-            ? celdaPorAncho
-            : celdaPorAlto;
+        final celdaPorAlto = (altoMaximo - 8 * 2) / 3;
+        final celdaSize =
+        celdaPorAncho < celdaPorAlto ? celdaPorAncho : celdaPorAlto;
 
         final gridAncho = celdaSize * 4 + 8 * 3;
-        final gridAlto  = celdaSize * 3 + 8 * 2;
+        final gridAlto = celdaSize * 3 + 8 * 2;
 
         return Center(
           child: SizedBox(
@@ -188,110 +147,6 @@ class _ParejasScreenState extends State<ParejasScreen> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildFelicitacion() {
-    final puntos = _calcularPuntos();
-    return Container(
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          RichText(
-            text: TextSpan(
-              style: const TextStyle(
-                fontFamily: 'Nunito',
-                fontSize: 80,
-                fontWeight: FontWeight.w900,
-                shadows: [
-                  Shadow(color: Colors.black45, blurRadius: 8, offset: Offset(2, 2)),
-                ],
-              ),
-              children: [
-                TextSpan(text: '¡', style: TextStyle(color: Colors.orange[700])),
-                TextSpan(text: 'F', style: TextStyle(color: Colors.red[400])),
-                TextSpan(text: 'E', style: TextStyle(color: Colors.orange[600])),
-                TextSpan(text: 'L', style: TextStyle(color: Colors.yellow[300])),
-                TextSpan(text: 'I', style: TextStyle(color: Colors.green[400])),
-                TextSpan(text: 'C', style: TextStyle(color: Colors.blue[300])),
-                TextSpan(text: 'I', style: TextStyle(color: Colors.purple[300])),
-                TextSpan(text: 'D', style: TextStyle(color: Colors.red[400])),
-                TextSpan(text: 'A', style: TextStyle(color: Colors.orange[600])),
-                TextSpan(text: 'D', style: TextStyle(color: Colors.yellow[300])),
-                TextSpan(text: 'E', style: TextStyle(color: Colors.green[400])),
-                TextSpan(text: 'S', style: TextStyle(color: Colors.blue[300])),
-                TextSpan(text: '!', style: TextStyle(color: Colors.purple[300])),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          RichText(
-            text: TextSpan(
-              style: const TextStyle(
-                fontFamily: 'Nunito',
-                fontSize: 40,
-                fontWeight: FontWeight.w900,
-                shadows: [
-                  Shadow(color: Colors.black45, blurRadius: 4, offset: Offset(1, 1)),
-                ],
-              ),
-              children: [
-                TextSpan(text: '¡', style: TextStyle(color: Colors.orange[700])),
-                TextSpan(text: 'H', style: TextStyle(color: Colors.red[400])),
-                TextSpan(text: 'a', style: TextStyle(color: Colors.orange[600])),
-                TextSpan(text: 's', style: TextStyle(color: Colors.yellow[600])),
-                TextSpan(text: ' e', style: TextStyle(color: Colors.green[400])),
-                TextSpan(text: 'n', style: TextStyle(color: Colors.blue[300])),
-                TextSpan(text: 'c', style: TextStyle(color: Colors.purple[300])),
-                TextSpan(text: 'o', style: TextStyle(color: Colors.red[400])),
-                TextSpan(text: 'n', style: TextStyle(color: Colors.orange[600])),
-                TextSpan(text: 't', style: TextStyle(color: Colors.yellow[600])),
-                TextSpan(text: 'r', style: TextStyle(color: Colors.green[400])),
-                TextSpan(text: 'a', style: TextStyle(color: Colors.blue[300])),
-                TextSpan(text: 'd', style: TextStyle(color: Colors.purple[300])),
-                TextSpan(text: 'o', style: TextStyle(color: Colors.red[400])),
-                TextSpan(text: ' t', style: TextStyle(color: Colors.orange[600])),
-                TextSpan(text: 'o', style: TextStyle(color: Colors.yellow[600])),
-                TextSpan(text: 'd', style: TextStyle(color: Colors.green[400])),
-                TextSpan(text: 'a', style: TextStyle(color: Colors.blue[300])),
-                TextSpan(text: 's', style: TextStyle(color: Colors.purple[300])),
-                TextSpan(text: ' l', style: TextStyle(color: Colors.red[400])),
-                TextSpan(text: 'a', style: TextStyle(color: Colors.orange[600])),
-                TextSpan(text: 's', style: TextStyle(color: Colors.yellow[600])),
-                TextSpan(text: ' p', style: TextStyle(color: Colors.green[400])),
-                TextSpan(text: 'a', style: TextStyle(color: Colors.blue[300])),
-                TextSpan(text: 'r', style: TextStyle(color: Colors.purple[300])),
-                TextSpan(text: 'e', style: TextStyle(color: Colors.red[400])),
-                TextSpan(text: 'j', style: TextStyle(color: Colors.orange[600])),
-                TextSpan(text: 'a', style: TextStyle(color: Colors.yellow[600])),
-                TextSpan(text: 's', style: TextStyle(color: Colors.green[400])),
-                TextSpan(text: '!', style: TextStyle(color: Colors.blue[300])),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Intentos: ${_estado.intentos}  •  Puntos: $puntos',
-            style: TextStyle(
-              fontSize: 24,
-              fontFamily: 'Nunito',
-              fontWeight: FontWeight.bold,
-              color: Colors.black54,
-            ),
-          ),
-          const SizedBox(height: 32),
-          ScalePulse(
-            onTap: _reiniciar, // _cargarJuego en puzzle
-            child: Image.asset(
-              'assets/images/jugar_de_nuevo_redondo.png',
-              height: 180,
-              fit: BoxFit.contain,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

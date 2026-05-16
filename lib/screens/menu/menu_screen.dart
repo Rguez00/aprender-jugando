@@ -5,12 +5,12 @@ import 'package:proyecto_aprender_jugando/utils/tema.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/animated_background.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/fade_in_slide.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/scale_pulse.dart';
-
-import '../colores/colores_screen.dart';
+import '../juegos/colores/colores_screen.dart';
 import '../juegos/letras/letras_screen.dart';
+import '../juegos/mates/mates_screen.dart';
 import '../juegos/parejas/parejas_screen.dart';
 import '../juegos/puzzle/puzzle_screen.dart';
-import '../mates/mates_screen.dart';
+
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});

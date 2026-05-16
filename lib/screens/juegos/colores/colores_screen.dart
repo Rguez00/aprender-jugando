@@ -6,7 +6,9 @@ import 'package:proyecto_aprender_jugando/providers/estadisticas_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/juego_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/perfil_provider.dart';
 import 'package:proyecto_aprender_jugando/utils/tema.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/contador_juego.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/marco_juego.dart';
+import 'package:proyecto_aprender_jugando/widgets/common/pantalla_felicitacion.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/scale_pulse.dart';
 
 const int kPreguntasColores = 10;
@@ -56,12 +58,7 @@ class _ColoresScreenState extends State<ColoresScreen> {
 
     perfilProvider.actualizarPuntos(_calcularPuntos());
 
-    juegoProvider.iniciarJuego(JuegoColores(
-      id: 'colores',
-      nombre: 'Colores',
-      descripcion: 'Aprende los colores en castellano e inglés',
-      icono: 'assets/images/logo_colores.png',
-    ));
+    juegoProvider.iniciarJuego(JuegoColores());
     for (var i = 0; i < _estado.aciertos; i++) juegoProvider.registrarAcierto();
     for (var i = 0; i < _estado.errores; i++) juegoProvider.registrarErrores();
 
@@ -77,42 +74,27 @@ class _ColoresScreenState extends State<ColoresScreen> {
       titulo: 'Colores',
       onSalir: () => Navigator.pop(context),
       onReiniciar: _reiniciar,
-      cabeceraExtra: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: AppTema.dorado,
-          borderRadius: AppTema.radiusMedio,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Text(
-          '🎨 ${_estado.indiceActual + 1} / $kPreguntasColores',
-          style: const TextStyle(
-            fontFamily: 'Nunito',
-            fontSize: 18,
-            fontWeight: FontWeight.w900,
-            color: AppTema.azulOscuro,
-          ),
-        ),
+      cabeceraExtra: ContadorJuego(
+        texto: '🎨 ${_estado.indiceActual + 1} / $kPreguntasColores',
       ),
-      child: _estado.finalizado ? _buildFelicitacion() : _buildJuego(),
+      child: _estado.finalizado
+          ? PantallaFelicitacion(
+        subtitulo: '¡Has completado todos los colores!',
+        infoPuntos:
+        '${_estado.aciertos} aciertos  •  Puntos: ${_calcularPuntos()}',
+        onJugarDeNuevo: _reiniciar,
+      )
+          : _buildJuego(),
     );
   }
 
   Widget _buildJuego() {
     final pregunta = _estado.preguntaActual;
-    final esVerColor =
-        pregunta.tipo == TipoPregunta.verColorElegirNombre;
+    final esVerColor = pregunta.tipo == TipoPregunta.verColorElegirNombre;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // ── ESTÍMULO (color o nombre) ────────────────────
         Expanded(
           flex: 3,
           child: Center(
@@ -122,7 +104,6 @@ class _ColoresScreenState extends State<ColoresScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        // ── OPCIONES ─────────────────────────────────────
         Expanded(
           flex: 2,
           child: Center(
@@ -143,7 +124,6 @@ class _ColoresScreenState extends State<ColoresScreen> {
     );
   }
 
-  // ── ESTÍMULO TIPO A: rectángulo de color grande ────────
   Widget _buildRectanguloColor(ColorInfo info) {
     return Container(
       width: 280,
@@ -171,7 +151,6 @@ class _ColoresScreenState extends State<ColoresScreen> {
     );
   }
 
-  // ── ESTÍMULO TIPO B: nombre del color en grande ────────
   Widget _buildNombrePregunta(ColorInfo info) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -205,35 +184,21 @@ class _ColoresScreenState extends State<ColoresScreen> {
               ),
             ],
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                info.castellano.toUpperCase(),
-                style: const TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: 52,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.black87,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black26,
-                      blurRadius: 8,
-                      offset: Offset(1, 2),
-                    ),
-                  ],
+          child: Text(
+            info.castellano.toUpperCase(),
+            style: const TextStyle(
+              fontFamily: 'Nunito',
+              fontSize: 52,
+              fontWeight: FontWeight.w900,
+              color: Colors.black87,
+              shadows: [
+                Shadow(
+                  color: Colors.black26,
+                  blurRadius: 8,
+                  offset: Offset(1, 2),
                 ),
-              ),
-              Text(
-                info.ingles.toUpperCase(),
-                style: TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black38,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -303,7 +268,6 @@ class _ColoresScreenState extends State<ColoresScreen> {
     );
   }
 
-  // ── OPCIÓN TIPO B: rectángulo de color ─────────────────
   Widget _buildOpcionColor(int i, PreguntaColor pregunta) {
     final opcion = pregunta.opciones[i];
     final respondida = _estado.respondida;
@@ -359,82 +323,6 @@ class _ColoresScreenState extends State<ColoresScreen> {
               color: Colors.white, size: 40),
         )
             : null,
-      ),
-    );
-  }
-
-  Widget _buildFelicitacion() {
-    final puntos = _calcularPuntos();
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RichText(
-            text: TextSpan(
-              style: const TextStyle(
-                fontFamily: 'Nunito',
-                fontSize: 80,
-                fontWeight: FontWeight.w900,
-                shadows: [
-                  Shadow(
-                      color: Colors.black45,
-                      blurRadius: 8,
-                      offset: Offset(2, 2)),
-                ],
-              ),
-              children: [
-                TextSpan(text: '¡', style: TextStyle(color: Colors.orange[700])),
-                TextSpan(text: 'F', style: TextStyle(color: Colors.red[400])),
-                TextSpan(text: 'E', style: TextStyle(color: Colors.orange[600])),
-                TextSpan(text: 'L', style: TextStyle(color: Colors.yellow[300])),
-                TextSpan(text: 'I', style: TextStyle(color: Colors.green[400])),
-                TextSpan(text: 'C', style: TextStyle(color: Colors.blue[300])),
-                TextSpan(text: 'I', style: TextStyle(color: Colors.purple[300])),
-                TextSpan(text: 'D', style: TextStyle(color: Colors.red[400])),
-                TextSpan(text: 'A', style: TextStyle(color: Colors.orange[600])),
-                TextSpan(text: 'D', style: TextStyle(color: Colors.yellow[300])),
-                TextSpan(text: 'E', style: TextStyle(color: Colors.green[400])),
-                TextSpan(text: 'S', style: TextStyle(color: Colors.blue[300])),
-                TextSpan(text: '!', style: TextStyle(color: Colors.purple[300])),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            '${_estado.aciertos} aciertos de $kPreguntasColores',
-            style: TextStyle(
-              fontFamily: 'Nunito',
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white.withOpacity(0.95),
-              shadows: const [
-                Shadow(
-                    color: Colors.black38,
-                    blurRadius: 4,
-                    offset: Offset(1, 1)),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Puntos conseguidos: $puntos',
-            style: TextStyle(
-              fontFamily: 'Nunito',
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white.withOpacity(0.9),
-            ),
-          ),
-          const SizedBox(height: 32),
-          ScalePulse(
-            onTap: _reiniciar,
-            child: Image.asset(
-              'assets/images/jugar_de_nuevo_redondo.png',
-              height: 120,
-              fit: BoxFit.contain,
-            ),
-          ),
-        ],
       ),
     );
   }
