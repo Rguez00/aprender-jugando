@@ -1,16 +1,5 @@
 import 'package:flutter/material.dart';
 
-const List<Color> _kColores = [
-  Color(0xFFE53935),
-  Color(0xFF8E24AA),
-  Color(0xFF1E88E5),
-  Color(0xFF00897B),
-  Color(0xFFF4511E),
-  Color(0xFF43A047),
-  Color(0xFFFFB300),
-  Color(0xFF00ACC1),
-];
-
 class BloqueLetra extends StatelessWidget {
   final String letra;
   final int indice;
@@ -27,7 +16,6 @@ class BloqueLetra extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _kColores[indice % _kColores.length];
 
     final bloque = AnimatedOpacity(
       duration: const Duration(milliseconds: 200),
@@ -36,15 +24,15 @@ class BloqueLetra extends StatelessWidget {
         width: 64,
         height: 64,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.3),  // ← igual que hueco vacío
+          color: Colors.white.withValues(alpha:0.3),  // ← igual que hueco vacío
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: Colors.white.withOpacity(0.6),  // ← igual que hueco vacío
+            color: Colors.white.withValues(alpha:0.6),  // ← igual que hueco vacío
             width: 2.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha:0.1),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -83,15 +71,15 @@ class BloqueLetra extends StatelessWidget {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withValues(alpha:0.5),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withValues(alpha:0.8),
                 width: 2.5,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withValues(alpha:0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 6),
                 ),

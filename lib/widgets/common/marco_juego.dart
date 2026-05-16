@@ -64,13 +64,13 @@ class MarcoJuego extends StatelessWidget {
                               borderRadius: AppTema.radiusGrande,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.4),
+                                  color: Colors.black.withValues(alpha:0.4),
                                   blurRadius: 8,
                                   offset: const Offset(0, 4),
                                 ),
                               ],
                               border: Border.all(
-                                color: AppTema.naranja.withOpacity(0.6),
+                                color: AppTema.naranja.withValues(alpha:0.6),
                                 width: 2,
                               ),
                             ),
@@ -105,11 +105,11 @@ class MarcoJuego extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.95),
+                                  color: Colors.white.withValues(alpha:0.95),
                                   borderRadius: AppTema.radiusGrande,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
+                                      color: Colors.black.withValues(alpha:0.2),
                                       blurRadius: 8,
                                       offset: const Offset(0, 4),
                                     ),

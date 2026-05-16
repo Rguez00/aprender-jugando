@@ -133,18 +133,18 @@ class _ColoresScreenState extends State<ColoresScreen> {
         borderRadius: AppTema.radiusGrande,
         boxShadow: [
           BoxShadow(
-            color: info.color.withOpacity(0.5),
+            color: info.color.withValues(alpha:0.5),
             blurRadius: 24,
             offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha:0.2),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-          color: Colors.white.withOpacity(0.4),
+          color: Colors.white.withValues(alpha:0.4),
           width: 3,
         ),
       ),
@@ -174,11 +174,11 @@ class _ColoresScreenState extends State<ColoresScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.95),
+            color: Colors.white.withValues(alpha:0.95),
             borderRadius: AppTema.radiusGrande,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.15),
+                color: Colors.black.withValues(alpha:0.15),
                 blurRadius: 12,
                 offset: const Offset(0, 6),
               ),
@@ -216,8 +216,8 @@ class _ColoresScreenState extends State<ColoresScreen> {
     Color textoColor;
 
     if (!respondida) {
-      fondo = Colors.white.withOpacity(0.92);
-      borde = Colors.white.withOpacity(0.5);
+      fondo = Colors.white.withValues(alpha:0.92);
+      borde = Colors.white.withValues(alpha:0.5);
       textoColor = AppTema.azulOscuro;
     } else if (esCorrecta) {
       fondo = const Color(0xFFE2EFDA);
@@ -228,9 +228,9 @@ class _ColoresScreenState extends State<ColoresScreen> {
       borde = AppTema.rojo;
       textoColor = AppTema.rojo;
     } else {
-      fondo = Colors.white.withOpacity(0.3);
-      borde = Colors.white.withOpacity(0.2);
-      textoColor = Colors.white.withOpacity(0.4);
+      fondo = Colors.white.withValues(alpha:0.3);
+      borde = Colors.white.withValues(alpha:0.2);
+      textoColor = Colors.white.withValues(alpha:0.4);
     }
 
     return ScalePulse(
@@ -247,7 +247,7 @@ class _ColoresScreenState extends State<ColoresScreen> {
               ? null
               : [
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
+              color: Colors.black.withValues(alpha:0.15),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -275,7 +275,7 @@ class _ColoresScreenState extends State<ColoresScreen> {
     final esCorrecta = _estado.esCorrecta(i);
 
     double bordeWidth = 3;
-    Color bordeColor = Colors.white.withOpacity(0.4);
+    Color bordeColor = Colors.white.withValues(alpha:0.4);
 
     if (respondida) {
       if (esCorrecta) {
@@ -285,7 +285,7 @@ class _ColoresScreenState extends State<ColoresScreen> {
         bordeColor = AppTema.rojo;
         bordeWidth = 5;
       } else {
-        bordeColor = Colors.white.withOpacity(0.15);
+        bordeColor = Colors.white.withValues(alpha:0.15);
       }
     }
 
@@ -301,12 +301,12 @@ class _ColoresScreenState extends State<ColoresScreen> {
           border: Border.all(color: bordeColor, width: bordeWidth),
           boxShadow: [
             BoxShadow(
-              color: opcion.color.withOpacity(respondida ? 0.2 : 0.5),
+              color: opcion.color.withValues(alpha:respondida ? 0.2 : 0.5),
               blurRadius: respondida ? 4 : 12,
               offset: const Offset(0, 4),
             ),
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
+              color: Colors.black.withValues(alpha:0.15),
               blurRadius: 6,
               offset: const Offset(0, 2),
             ),

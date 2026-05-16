@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 
 import '../models/estadisticas.dart';
 import '../models/juego.dart';
-import '../models/perfil.dart';
-import '../services/storage_service.dart';
 
 class JuegoProvider extends ChangeNotifier{
   Juego? _juegoActual;

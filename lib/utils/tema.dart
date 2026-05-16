@@ -60,7 +60,7 @@ class AppTema {
   // ══════════════════════════════════════
   static List<BoxShadow> sombraCard = [
     BoxShadow(
-      color: Colors.black.withOpacity(0.3),
+      color: Colors.black.withValues(alpha:0.3),
       blurRadius: 12,
       offset: const Offset(0, 6),
     ),
@@ -68,7 +68,7 @@ class AppTema {
 
   static List<BoxShadow> sombraBoton = [
     BoxShadow(
-      color: Colors.black.withOpacity(0.2),
+      color: Colors.black.withValues(alpha:0.2),
       blurRadius: 8,
       offset: const Offset(0, 4),
     ),
@@ -76,7 +76,7 @@ class AppTema {
 
   static List<BoxShadow> sombraAvatar = [
     BoxShadow(
-      color: naranja.withOpacity(0.5),
+      color: naranja.withValues(alpha:0.5),
       blurRadius: 16,
       offset: const Offset(0, 4),
     ),
@@ -165,7 +165,7 @@ class AppTema {
     borderRadius: radiusGrande,
     boxShadow: [
       BoxShadow(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha:0.3),
         blurRadius: 12,
         offset: const Offset(0, 6),
       ),
@@ -177,7 +177,7 @@ class AppTema {
     borderRadius: radiusMedio,
     boxShadow: [
       BoxShadow(
-        color: naranja.withOpacity(0.4),
+        color: naranja.withValues(alpha:0.4),
         blurRadius: 8,
         offset: const Offset(0, 4),
       ),
@@ -189,7 +189,7 @@ class AppTema {
     borderRadius: radiusMedio,
     boxShadow: [
       BoxShadow(
-        color: verde.withOpacity(0.4),
+        color: verde.withValues(alpha:0.4),
         blurRadius: 8,
         offset: const Offset(0, 4),
       ),
@@ -201,7 +201,7 @@ class AppTema {
     borderRadius: radiusMedio,
     boxShadow: [
       BoxShadow(
-        color: rojo.withOpacity(0.4),
+        color: rojo.withValues(alpha:0.4),
         blurRadius: 8,
         offset: const Offset(0, 4),
       ),
@@ -212,7 +212,7 @@ class AppTema {
     gradient: gradienteFondo,
     borderRadius: radiusGrande,
     border: Border.all(
-      color: naranja.withOpacity(0.5),
+      color: naranja.withValues(alpha:0.5),
       width: 2,
     ),
   );

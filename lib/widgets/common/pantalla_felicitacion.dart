@@ -30,7 +30,7 @@ class PantallaFelicitacion extends StatelessWidget {
               fontFamily: 'Nunito',
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha:0.9),
               shadows: const [
                 Shadow(
                   color: Colors.black38,

@@ -110,11 +110,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 220,
                             height: 280,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.85),
+                              color: Colors.white.withValues(alpha:0.85),
                               borderRadius: AppTema.radiusGrande,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.15),
+                                  color: Colors.black.withValues(alpha:0.15),
                                   blurRadius: 12,
                                   offset: const Offset(0, 6),
                                 ),

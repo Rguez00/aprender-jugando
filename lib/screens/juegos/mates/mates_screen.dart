@@ -233,13 +233,13 @@ class _MatesScreenState extends State<MatesScreen> {
                       height: 70,
                       decoration: BoxDecoration(
                         color: destacado
-                            ? Colors.yellow.withOpacity(0.4)
-                            : fondoHueco ?? Colors.black.withOpacity(0.15),
+                            ? Colors.yellow.withValues(alpha:0.4)
+                            : fondoHueco ?? Colors.black.withValues(alpha:0.15),
                         borderRadius: AppTema.radiusMedio,
                         border: Border.all(
                           color: destacado
                               ? Colors.yellow
-                              : bordeHueco ?? Colors.black.withOpacity(0.4),
+                              : bordeHueco ?? Colors.black.withValues(alpha:0.4),
                           width: destacado ? 3 : 2,
                         ),
                       ),
@@ -276,7 +276,7 @@ class _MatesScreenState extends State<MatesScreen> {
           width: 65,
           height: 65,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.8),
+            color: color.withValues(alpha:0.8),
             borderRadius: BorderRadius.circular(8),
           ),
           padding: const EdgeInsets.all(3),
@@ -335,21 +335,21 @@ class _MatesScreenState extends State<MatesScreen> {
       height: 72,
       decoration: BoxDecoration(
         color: usado
-            ? Colors.white.withOpacity(0.15)
+            ? Colors.white.withValues(alpha:0.15)
             : seleccionado
             ? AppTema.dorado
-            : Colors.white.withOpacity(0.9),
+            : Colors.white.withValues(alpha:0.9),
         borderRadius: AppTema.radiusMedio,
         border: Border.all(
           color:
-          seleccionado ? AppTema.naranja : Colors.white.withOpacity(0.5),
+          seleccionado ? AppTema.naranja : Colors.white.withValues(alpha:0.5),
           width: seleccionado ? 3 : 2,
         ),
         boxShadow: usado
             ? null
             : [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha:0.2),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
@@ -362,7 +362,7 @@ class _MatesScreenState extends State<MatesScreen> {
             fontFamily: 'Nunito',
             fontSize: 36,
             fontWeight: FontWeight.w900,
-            color: usado ? Colors.white.withOpacity(0.3) : AppTema.azulOscuro,
+            color: usado ? Colors.white.withValues(alpha:0.3) : AppTema.azulOscuro,
           ),
         ),
       ),

@@ -190,11 +190,11 @@ class _LetrasScreenState extends State<LetrasScreen> {
           child: Center(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withValues(alpha:0.9),
                 borderRadius: AppTema.radiusGrande,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha:0.2),
                     blurRadius: 12,
                     offset: const Offset(0, 6),
                   ),
@@ -249,11 +249,11 @@ class _LetrasScreenState extends State<LetrasScreen> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 12, vertical: 10),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.85),
+                    color: Colors.white.withValues(alpha:0.85),
                     borderRadius: AppTema.radiusMedio,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
+                        color: Colors.black.withValues(alpha:0.15),
                         blurRadius: 6,
                         offset: const Offset(0, 3),
                       ),

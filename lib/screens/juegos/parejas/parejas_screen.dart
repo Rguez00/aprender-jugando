@@ -6,7 +6,6 @@ import 'package:proyecto_aprender_jugando/providers/estadisticas_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/juego_provider.dart';
 import 'package:proyecto_aprender_jugando/providers/perfil_provider.dart';
 import 'package:proyecto_aprender_jugando/utils/constantes.dart';
-import 'package:proyecto_aprender_jugando/utils/tema.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/contador_juego.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/marco_juego.dart';
 import 'package:proyecto_aprender_jugando/widgets/common/pantalla_felicitacion.dart';

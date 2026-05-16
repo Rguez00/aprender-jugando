@@ -20,10 +20,10 @@ class HuecoLetra extends StatelessWidget {
     Color borde;
 
     if (!tieneLetra) {
-      fondo = Colors.white.withOpacity(0.3);
-      borde = Colors.white.withOpacity(0.6);
+      fondo = Colors.white.withValues(alpha:0.3);
+      borde = Colors.white.withValues(alpha:0.6);
     } else if (esCorrecta) {
-      fondo = Colors.white.withOpacity(0.95);
+      fondo = Colors.white.withValues(alpha:0.95);
       borde = Colors.white;
     } else {
       fondo = const Color(0xFFFFCDD2);
@@ -42,7 +42,7 @@ class HuecoLetra extends StatelessWidget {
           width: 60,
           height: 60,
           decoration: BoxDecoration(
-            color: destacado ? Colors.yellow.withOpacity(0.5) : fondo,
+            color: destacado ? Colors.yellow.withValues(alpha:0.5) : fondo,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: destacado ? Colors.yellow : borde,
@@ -51,7 +51,7 @@ class HuecoLetra extends StatelessWidget {
             boxShadow: tieneLetra
                 ? [
               BoxShadow(
-                color: Colors.black.withOpacity(0.15),
+                color: Colors.black.withValues(alpha:0.15),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
